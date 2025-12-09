@@ -11,11 +11,21 @@ main {
   z-index: 1;
 }
 
+/* Footer – mobile Basis */
 .footer {
   text-align: center;
-  padding: 2rem;
+  padding: 1.5rem 1.25rem;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   border-top: 1px solid var(--border);
-  margin-top: 4rem;
+  margin-top: 3rem;
+}
+
+/* ab ~Tablets */
+@media (min-width: 768px) {
+  .footer {
+    padding: 2rem;
+    font-size: 0.9rem;
+    margin-top: 4rem;
+  }
 }

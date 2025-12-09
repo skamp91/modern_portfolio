@@ -1,170 +1,209 @@
+/* ========== Hero – Mobile First ========== */
+
 .hero {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 65px;
+}
+
+/* Glow im Hintergrund */
+.hero-glow {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  width: 360px;
+  height: 520px;
+  background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.35;
+  z-index: 0;
+}
+
+/* Rahmen / Karte – mobile: noch ohne Parallelogramm */
+.hero-frame {
   position: relative;
-  padding: 8rem 2rem 4rem;
-  overflow: hidden;
-}
-
-.hero-container {
-  max-width: 1200px;
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  opacity: 0.85;
 }
 
-.hero-content {
-  z-index: 2;
+/* Vollflächiges Bild */
+.hero-bg {
+  position: absolute;
+  inset: 0;
 }
+
+.hero-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: -20px 0;
+  opacity: 0.8;
+  display: block;
+}
+
+/* Overlay mit Gradient – Text liegt darauf und kann ins Bild hineinlaufen */
+.hero-overlay {
+  position: relative;
+  padding: 2.2rem 1.8rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  justify-content: flex-end;
+  min-height: 550px;
+  height: 100%;
+
+  /* Gradient von dunklem Grün nach transparent,
+   * damit Text auch über dem Bild gut lesbar bleibt */
+  background: linear-gradient(
+    to right,
+    rgba(6, 22, 16, 0.95) 0%,
+    rgba(6, 22, 16, 0.93) 40%,
+    rgba(6, 22, 16, 0.8) 60%,
+    rgba(6, 22, 16, 0.3) 80%,
+    rgba(6, 22, 16, 0) 100%
+  );
+  color: #f9fafb;
+}
+
+/* Textbereich */
 
 .hero-badge {
   display: inline-block;
-  padding: 0.5rem 1.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 50px;
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-  color: var(--primary);
-  backdrop-filter: blur(10px);
+  color: #f97316; /* Orange */
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 2rem;
   font-weight: 800;
   line-height: 1.2;
-  margin-bottom: 1.5rem;
-  color: var(--text);
+  color: var(--gradient-1);
 }
 
 .hero-description {
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  margin-bottom: 2.5rem;
-  line-height: 1.8;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: rgba(226, 232, 240, 0.9);
+  max-width: 30rem;
 }
 
 .hero-buttons {
   display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.hero-visual {
-  position: relative;
-  height: 500px;
-  z-index: 1;
-}
-
-.floating-card {
-  position: absolute;
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2rem;
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  align-items: stretch;
+  gap: 0.9rem;
 }
 
-.floating-card:hover {
-  transform: translateY(-10px) scale(1.05);
-  border-color: var(--primary);
-  box-shadow: 0 12px 40px rgba(255, 107, 53, 0.3);
+.hero-secondary-btn {
+  border: 1px solid rgba(148, 163, 184, 0.6);
 }
 
-.card-icon {
-  font-size: 3rem;
-}
-
-.card-text {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.card-1 {
-  top: 10%;
-  left: 10%;
-  animation: float 6s ease-in-out infinite;
-}
-
-.card-2 {
-  top: 50%;
-  right: 10%;
-  animation: float 8s ease-in-out infinite -2s;
-}
-
-.card-3 {
-  bottom: 10%;
-  left: 20%;
-  animation: float 7s ease-in-out infinite -4s;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
+/* ========== Upward: größere Screens ========== */
+@media (min-width: 400px) {
+  .hero-bg-image {
+    object-position: 40px 0;
   }
-  50% {
-    transform: translateY(-20px) rotate(5deg);
+}
+@media (min-width: 480px) {
+  .hero-bg-image {
+    object-position: 60px 0;
+  }
+}
+@media (min-width: 520px) {
+  .hero-bg-image {
+    object-position: 100px 0;
   }
 }
 
-.hero-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.2;
-  z-index: -1;
-  animation: pulse 4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.2;
-    transform: translate(-50%, -50%) scale(1);
+@media (min-width: 640px) {
+  .hero-bg-image {
+    object-position: 200px 0;
   }
-  50% {
-    opacity: 0.4;
-    transform: translate(-50%, -50%) scale(1.2);
-  }
-}
 
-.scroll-indicator {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2rem;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-@media (max-width: 968px) {
-  .hero-container {
-    grid-template-columns: 1fr;
-    text-align: center;
+  .hero-overlay {
+    padding: 2.6rem 2.4rem 2.8rem;
   }
+
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.6rem;
   }
-  .hero-visual {
-    height: 300px;
-    margin-top: 2rem;
+
+  .hero-description {
+    font-size: 1.03rem;
+  }
+
+  .hero-buttons {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-frame {
+    height: 520px; /* mehr Höhe */
+    border-radius: 0;
+  }
+
+  .hero-overlay {
+    padding: 3rem 3.2rem;
+    justify-content: center;
+    max-width: 60rem;
+  }
+
+  .hero-title {
+    font-size: 3.1rem;
+  }
+
+  .hero-description {
+    font-size: 1.08rem;
+  }
+
+  .hero-buttons {
+    margin-top: 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-frame {
+    height: 600px;
+  }
+
+  .hero-overlay {
+    padding-left: 6.8rem;
+    padding-right: 4.2rem;
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+  }
+
+  .hero-description {
+    font-size: 1.12rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero-overlay {
+    padding-left: 12rem;
+  }
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  will-change: transform; /* für smoothes Scrollen */
+}
+
+/* Mobile: Parallax abschalten (Performance & Ruhe) */
+@media (max-width: 768px) {
+  .hero-bg {
+    transform: none !important;
   }
 }

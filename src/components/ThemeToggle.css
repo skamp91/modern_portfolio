@@ -16,6 +16,5 @@
 .theme-toggle:hover {
   background: var(--primary);
   border-color: var(--primary);
-  transform: rotate(15deg);
+  transform: rotate(15deg) !important;
 }
-

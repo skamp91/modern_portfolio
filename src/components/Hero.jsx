@@ -1,61 +1,89 @@
-import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
-import { scrollTo } from '../utils/animations'
-import './Hero.css'
-
-const cards = [
-  { icon: '⚡', text: 'React' },
-  { icon: '🎨', text: 'UI/UX' },
-  { icon: '🚀', text: 'Performance' }
-]
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { scrollTo } from '../utils/animations';
+import './Hero.css';
 
 export default function Hero() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const handleMove = (e) => setMousePos({
-      x: (e.clientX / window.innerWidth - 0.5) * 20,
-      y: (e.clientY / window.innerHeight - 0.5) * 20
-    })
-    window.addEventListener('mousemove', handleMove)
-    return () => window.removeEventListener('mousemove', handleMove)
-  }, [])
+    const handleScroll = () => {
+      setScrollY(window.scrollY || window.pageYOffset || 0);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Parallax-Stärke – kannste nach Geschmack anpassen
+  const parallaxStrength = 0.3;
 
   return (
-    <section id="hero" className="hero">
-      <div className="hero-container">
-        <motion.div className="hero-content" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <motion.div className="hero-badge" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
-            <span>👋 Willkommen</span>
-          </motion.div>
-          <motion.h1 className="hero-title" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            Fachinformatiker für<br /><span className="gradient-text">Anwendungsentwicklung</span>
-          </motion.h1>
-          <motion.p className="hero-description" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-            3 Jahre Erfahrung in der Frontend-Entwicklung<br />Aktuell: Softwaretester-Zertifizierung
-          </motion.p>
-          <motion.div className="hero-buttons" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-            <motion.button className="btn btn-primary" onClick={() => scrollTo('contact')} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+    <section id='hero' className='hero'>
+      <div className='hero-glow' />
+
+      <div className='hero-frame'>
+        {/* Vollflächiges Bild im Hintergrund mit Scroll-Parallax */}
+        <div
+          className='hero-bg'
+          style={{
+            transform: `translate3d(0, ${scrollY * parallaxStrength}px, 0)`,
+          }}
+        >
+          <img
+            src='./me.jpg'
+            alt='Portrait von Patrick Skamrahl'
+            className='hero-bg-image'
+          />
+        </div>
+
+        {/* Overlay + Text auf dem Bild */}
+        <motion.div
+          className='hero-overlay'
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <span className='hero-badge'>
+            Softwaretester + 3 Jahre Frontend-Erfahrung
+          </span>
+
+          <h1 className='hero-title'>
+            Patrick <br /> Skamrahl
+          </h1>
+
+          <p className='hero-description'>
+            Ich entwickle moderne, performante Webanwendungen mit Fokus auf
+            UI/UX. Aktuell erweitere ich mein Profil mit der ISTQB® Certified
+            Tester Foundation Level Ausbildung und praktischer Erfahrung in
+            agiler Softwareentwicklung.
+          </p>
+
+          <div className='hero-buttons'>
+            <motion.button
+              type='button'
+              className='btn btn-primary'
+              onClick={() => scrollTo('contact')}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
+            >
               Kontakt aufnehmen
             </motion.button>
-            <motion.button className="btn btn-secondary" onClick={() => scrollTo('projects')} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+
+            <motion.button
+              type='button'
+              className='btn btn-secondary hero-secondary-btn'
+              onClick={() => scrollTo('projects')}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
+            >
               Meine Projekte
             </motion.button>
-          </motion.div>
-        </motion.div>
-        <motion.div className="hero-visual" style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}>
-          {cards.map((card, i) => (
-            <div key={i} className={`floating-card card-${i + 1}`}>
-              <div className="card-icon">{card.icon}</div>
-              <div className="card-text">{card.text}</div>
-            </div>
-          ))}
-          <div className="hero-glow"></div>
+          </div>
         </motion.div>
       </div>
-      <motion.div className="scroll-indicator" animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
-        <span>↓</span>
-      </motion.div>
     </section>
-  )
+  );
 }

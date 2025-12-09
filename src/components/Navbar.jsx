@@ -1,78 +1,120 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { SECTIONS } from '../utils/constants'
-import { scrollTo } from '../utils/animations'
-import ThemeToggle from './ThemeToggle'
-import './Navbar.css'
+import { useEffect, useState } from 'react';
+import './Navbar.css';
+import ThemeToggle from './ThemeToggle';
+
+/**
+ * Navigationseinträge – passe IDs bei Bedarf an deine Section-IDs an
+ * (z. B. "home" statt "hero").
+ */
+const NAV_ITEMS = [
+  { id: 'about', label: 'Über mich' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'experience', label: 'Erfahrung' },
+  { id: 'projects', label: 'Projekte' },
+  { id: 'contact', label: 'Kontakt' },
+];
+
+const scrollToSection = (id) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  // Fixed Navbar ausgleichen: etwas Offset nach oben
+  const y = el.getBoundingClientRect().top + window.scrollY - 80;
+
+  window.scrollTo({
+    top: y,
+    behavior: 'smooth',
+  });
+};
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState('hero')
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeId, setActiveId] = useState('hero');
+  const [scrolled, setScrolled] = useState(false);
 
-  const updateActiveSection = () => {
-    const scrollPosition = window.scrollY + 150
-    let current = 'hero'
-
-    for (let i = SECTIONS.length - 1; i >= 0; i--) {
-      const section = SECTIONS[i]
-      const el = document.getElementById(section)
-      if (el) {
-        const offsetTop = el.offsetTop
-        if (scrollPosition >= offsetTop) {
-          current = section
-          break
-        }
-      }
-    }
-
-    setActiveSection(current)
-  }
-
+  // Scroll-State für Schatten etc.
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-      updateActiveSection()
-    }
+    const onScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    updateActiveSection()
-    
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    onScroll();
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  const handleNavClick = (section) => {
-    setActiveSection(section)
-    scrollTo(section)
-    // Update nach Scroll-Animation
-    setTimeout(() => {
-      updateActiveSection()
-    }, 1000)
-  }
+  // Wenn das Viewport groß wird, Menü sicher schließen
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const handleNavClick = (id) => {
+    scrollToSection(id);
+    setActiveId(id);
+    setIsOpen(false); // auf Mobile nach Klick schließen
+  };
+
+  const handleLogoClick = () => {
+    handleNavClick('hero');
+  };
 
   return (
-    <motion.nav className={`navbar ${scrolled ? 'scrolled' : ''}`} initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }}>
-      <div className="nav-container">
-        <motion.div className="nav-logo" whileHover={{ scale: 1.05 }} onClick={() => handleNavClick('hero')}>
-          <span className="logo-text">Portfolio</span>
-        </motion.div>
-        <div className="nav-right">
-          <ul className="nav-links">
-            {SECTIONS.slice(1).map(item => (
-              <li key={item}>
-                <motion.button
-                  className={`nav-link ${activeSection === item ? 'active' : ''}`}
-                  onClick={() => handleNavClick(item)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+    <header
+      className={`navbar ${scrolled ? 'navbar--scrolled' : ''} ${
+        isOpen ? 'navbar--open' : ''
+      }`}
+    >
+      <div className='nav-container'>
+        {/* Top Bar: Logo + Actions */}
+        <div className='nav-bar-top'>
+          <button
+            className='nav-logo'
+            onClick={handleLogoClick}
+            aria-label='Zum Start scrollen'
+          >
+            Work In Progress
+          </button>
+
+          <div className='nav-actions'>
+            <ThemeToggle />
+
+            <button
+              className={`nav-toggle ${isOpen ? 'nav-toggle--open' : ''}`}
+              type='button'
+              aria-label={isOpen ? 'Navigation schließen' : 'Navigation öffnen'}
+              aria-expanded={isOpen}
+              onClick={() => setIsOpen((open) => !open)}
+            >
+              {/* zwei Linien, die zu einem modernen Pfeil / X animieren */}
+              <span className='nav-toggle-line nav-toggle-line--top' />
+              <span className='nav-toggle-line nav-toggle-line--bottom' />
+            </button>
+          </div>
+        </div>
+
+        {/* Navigationslinks */}
+        <nav className='nav-links-wrapper' aria-label='Hauptnavigation'>
+          <ul className='nav-links'>
+            {NAV_ITEMS.map((item) => (
+              <li key={item.id}>
+                <button
+                  type='button'
+                  className={`nav-link ${activeId === item.id ? 'active' : ''}`}
+                  onClick={() => handleNavClick(item.id)}
                 >
-                  {item.charAt(0).toUpperCase() + item.slice(1)}
-                </motion.button>
+                  {item.label}
+                </button>
               </li>
             ))}
           </ul>
-          <ThemeToggle />
-        </div>
+        </nav>
       </div>
-    </motion.nav>
-  )
+    </header>
+  );
 }
