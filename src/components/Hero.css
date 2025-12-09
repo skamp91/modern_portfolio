@@ -107,12 +107,12 @@
 /* ========== Upward: größere Screens ========== */
 @media (min-width: 400px) {
   .hero-bg-image {
-    object-position: 40px 0;
+    object-position: 0px 0;
   }
 }
 @media (min-width: 480px) {
   .hero-bg-image {
-    object-position: 60px 0;
+    object-position: 30px 0;
   }
 }
 @media (min-width: 520px) {
